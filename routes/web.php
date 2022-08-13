@@ -8,6 +8,9 @@ use Sendportal\Base\Facades\Sendportal;
 use App\Http\Middleware\OwnsCurrentWorkspace;
 use App\Http\Middleware\RequireWorkspace;
 
+URL::forceScheme('https');
+
+
 Auth::routes(
     [
         'verify' => config('sendportal-host.auth.register', false),
