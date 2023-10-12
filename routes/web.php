@@ -7,18 +7,9 @@ use Illuminate\Support\Facades\Route;
 use Sendportal\Base\Facades\Sendportal;
 use App\Http\Middleware\OwnsCurrentWorkspace;
 use App\Http\Middleware\RequireWorkspace;
-use Illuminate\Support\Facades\Http;
-// URL::forceScheme('https');
 
+URL::forceScheme('http');
 
-Route::get('/test', function(){
-
-    // return 123;
-    $users = \json_decode(Http::get('http://127.0.0.1:8000/api/all-users'), true);
-
-    return $users;
-
-});
 
 Auth::routes(
     [

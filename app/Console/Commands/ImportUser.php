@@ -43,35 +43,46 @@ class ImportUser extends Command
      */
     public function handle()
     {        
-        $users = \json_decode(Http::get('http://127.0.0.1:8000/api/all-users'), true)['users'];
+        $path = 'https://fueler.io/api/get-all-user';
 
-        foreach ($users as $user) {  
+        $data = Http::withHeaders([
+            'X-API-KEY' => config('app.fueler_api_key'),
+        ])->get($path);
 
-            $existing_user = Subscriber::where('email', $user['email'])->first();
+        $all_user = $data['users'];
 
-            if(!isset($existing_user)){
-                // Split name into two part
-                $name  = $user['name'];        
-                $splitName = explode(' ', $name, 2);
-                $first_name = $splitName[0];
-                $last_name = !empty($splitName[1]) ? $splitName[1] : ''; // If last name doesn't exist, make it empty
+        if(count($all_user)>0){
 
-                // Create Subscriber
-                $subscriber = Subscriber::create([
-                    'workspace_id' => 1,
-                    'hash' => Str::uuid(),
-                    'email' => $user['email'],
-                    'first_name' => $first_name,
-                    'last_name' => $last_name,
-                ]);
+            foreach ($all_user as $user) {  
 
-                // Assign Tag to Each Subscriber
-                TagSubscriber::create([
-                    'tag_id' => 1,
-                    'subscriber_id' => $subscriber['id'],
-                ]);
+                $existing_user = Subscriber::where('email', $user['email'])->first();
+
+                if(!isset($existing_user)){
+                    // Split name into two part
+                    $name  = $user['name'];        
+                    $splitName = explode(' ', $name, 2);
+                    $first_name = $splitName[0];
+                    $last_name = !empty($splitName[1]) ? $splitName[1] : ''; // If last name doesn't exist, make it empty
+
+                    // Create Subscriber
+                    $subscriber = Subscriber::create([
+                        'workspace_id' => 1,
+                        'hash' => Str::uuid(),
+                        'email' => $user['email'],
+                        'first_name' => $first_name,
+                        'last_name' => $last_name,
+                    ]);
+
+                    // Assign Tag to Each Subscriber
+                    TagSubscriber::create([
+                        'tag_id' => 1,
+                        'subscriber_id' => $subscriber['id'],
+                    ]);
+                }
+            
             }
-          
         }
+
+       
     }
 }
