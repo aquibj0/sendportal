@@ -230,4 +230,14 @@ return [
 
     ],
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Fueler API Access
+    |--------------------------------------------------------------------------
+    | This API Key is used to access API of the main application (Fueler)
+    |
+    */
+
+    'fueler_api_key' => env('FUELER_API_KEY'),
 ];
